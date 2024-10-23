@@ -1,0 +1,124 @@
+pip install numpy matplotlib networkx scikit-learn
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+from sklearn.cluster import SpectralClustering
+
+# Create a synthetic dataset
+np.random.seed(42)
+num_points = 100
+points = np.random.rand(num_points, 2)
+
+# Plot the points
+plt.scatter(points[:, 0], points[:, 1], s=50)
+plt.title("Synthetic Dataset")
+
+
+!pip install --upgrade networkx
+
+import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx # This line imports the networkx module
+from sklearn.cluster import SpectralClustering
+from sklearn.neighbors import kneighbors_graph
+
+# Create a synthetic dataset
+np.random.seed(42)
+num_points = 100
+points = np.random.rand(num_points, 2)
+
+# Plot the points
+plt.scatter(points[:, 0], points[:, 1], s=50)
+plt.title("Synthetic Dataset")
+
+# Construct the k-nearest neighbors graph
+k = 5  # number of neighbors
+graph = kneighbors_graph(points, k, include_self=False)
+
+# Convert the graph to a NetworkX graph object
+G = nx.from_scipy_sparse_array(graph) # Use from_scipy_sparse_array instead of from_scipy_sparse_matrix
+
+# Draw the graph
+plt.figure(figsize=(8, 8))
+pos = {i: (points[i][0], points[i][1]) for i in range(num_points)}
+nx.draw(G, pos, node_size=50, with_labels=False)
+plt.title("K-Nearest Neighbors Graph")
+plt.show()
+
+
+# Perform spectral clustering
+num_clusters = 3
+sc = SpectralClustering(n_clusters=num_clusters, affinity='nearest_neighbors')
+labels = sc.fit_predict(points)
+
+# Plot the clustering result
+plt.figure(figsize=(8, 8))
+for i in range(num_clusters):
+    plt.scatter(points[labels == i][:, 0], points[labels == i][:, 1], s=50, label=f'Cluster {i}')
+plt.title("Graph-Based Clustering Result")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.legend()
+plt.show()
+
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+from sklearn.cluster import SpectralClustering
+from sklearn.neighbors import kneighbors_graph
+
+# Create a synthetic dataset
+np.random.seed(42)
+num_points = 100
+points = np.random.rand(num_points, 2)
+
+# Perform k-nearest neighbors graph construction
+k = 5  # number of neighbors
+graph = kneighbors_graph(points, k, include_self=False)
+G = nx.from_scipy_sparse_array(graph) # Use from_scipy_sparse_array to convert from a sparse matrix
+
+# Perform spectral clustering
+num_clusters = 3
+sc = SpectralClustering(n_clusters=num_clusters, affinity='nearest_neighbors')
+labels = sc.fit_predict(points)
+
+# Plot the clustering result
+plt.figure(figsize=(8, 8))
+for i in range(num_clusters):
+    plt.scatter(points[labels == i][:, 0], points[labels == i][:, 1], s=50, label=f'Cluster {i}')
+plt.title("Graph-Based Clustering Result")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.legend()
+plt.show()
+
+# Step 2: Create Spanning Trees for Each Cluster
+for cluster_id in range(num_clusters):
+    cluster_points = points[labels == cluster_id]
+
+    # Create a new graph for the cluster
+    cluster_graph = nx.Graph()
+
+    # Add edges between points in the cluster
+    for i in range(len(cluster_points)):
+        for j in range(i + 1, len(cluster_points)):
+            distance = np.linalg.norm(cluster_points[i] - cluster_points[j])
+            cluster_graph.add_edge(tuple(cluster_points[i]), tuple(cluster_points[j]), weight=distance)
+
+    # Compute the minimum spanning tree
+    mst = nx.minimum_spanning_tree(cluster_graph)
+
+    # Draw the MST
+    plt.figure(figsize=(8, 8))
+    pos = {point: (point[0], point[1]) for point in cluster_graph.nodes()}
+    nx.draw(mst, pos, with_labels=True, node_size=50, edge_color='blue', node_color='red')
+    plt.title(f"Minimum Spanning Tree for Cluster {cluster_id}")
+    plt.xlabel("Feature 1")
+    plt.ylabel("Feature 2")
+    plt.show()
+
+
