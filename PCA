@@ -1,0 +1,105 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+from sklearn.decomposition import PCA
+%matplotlib inline
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+import math
+
+# Random data generation
+rng = np.random.RandomState(0)
+X = rng.randn(2, 400)
+
+# Scaling and rotation matrices
+scale = np.array([[1, 0], [0, 0.4]])  # Standard deviations are 1 and 0.4
+rotate = np.array([[1, -1], [1, 1]]) / math.sqrt(2)  # Rotation matrix
+
+# Apply transformations
+transform = np.dot(rotate, scale)
+X = np.dot(transform, X)
+
+# Transpose and plot
+X = X.T
+plt.axis('equal')
+plt.scatter(X[:, 0], X[:, 1])
+plt.show()
+
+
+from sklearn.decomposition import PCA
+def arrow(v1, v2, ax):
+    arrowprops=dict(arrowstyle='->',
+                   linewidth=2,
+                   shrinkA=0, shrinkB=0)
+    ax.annotate("", v2, v1, arrowprops=arrowprops)
+pca=PCA(2)
+pca.fit(X)
+print("Principal axes:", pca.components_)
+print("Explained variance:", pca.explained_variance_)
+print("Mean:", pca.mean_)
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
+
+# Assume X is your original dataset
+# X = np.random.rand(100, 2)  # Example data
+pca = PCA(n_components=2)
+Z = pca.fit_transform(X)
+
+fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+# Original data
+axes[0].axis('equal')
+axes[0].scatter(X[:, 0], X[:, 1])
+for l, v in zip(pca.explained_variance_, pca.components_):
+    axes[0].arrow(0, 0, v[0] * l * 3, v[1] * l * 3, head_width=0.1, head_length=0.1, fc='r', ec='r')
+
+# Transformed data
+axes[1].axis('equal')
+axes[1].set_xlim(-3, 3)
+axes[1].set_ylim(-3, 3)  # Set ylim to match original scale
+axes[1].scatter(Z[:, 0], Z[:, 1])
+for l, v in zip([1.0, 0.16], [np.array([1.0, 0.0]), np.array([0.0, 1.0])]):
+    axes[1].arrow(0, 0, v[0] * l * 3, v[1] * l * 3, head_width=0.1, head_length=0.1, fc='r', ec='r')
+
+axes[0].set_title("Original")
+axes[1].set_title("Transformed")
+plt.show()
+
+
+
+pca=PCA(n_components=1)
+pca.fit(X)
+Z=pca.transform(X)
+print(pca.components_)
+plt.axis('equal')
+plt.scatter(Z[:,0],np.zeros(400), marker="d", alpha=0.1);
+
+
+from sklearn.datasets import load_diabetes
+X, y = load_diabetes(return_X_y=True) # Changed to keyword argument
+print(X.shape)
+print(y.shape)
+
+
+pca=PCA(2)
+pca.fit(X)
+print(pca.explained_variance_)
+Z=pca.transform(X)
+plt.axis('equal')
+plt.scatter(Z[:,0], Z[:,1]);
+
+
+import numpy as np # imports the numpy module and assigns it to the alias np
+
+rng=np.random.RandomState(0)
+X=rng.randn(3,400)
+p=rng.rand(10,3)  # Random projection into 10d
+X=np.dot(p, X)
+print(X)
+
+
