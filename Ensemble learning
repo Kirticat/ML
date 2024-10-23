@@ -1,0 +1,52 @@
+!pip install h5py tables kaggle mne
+!pip install --upgrade imbalanced-learn
+
+import os                         # for file locations
+import matplotlib.pyplot as plt   # for plotting
+import numpy as np                # arrays
+import pickle                     # saving python objects
+import pandas as pd               # dataframes
+import tables
+
+# colours for printing outputs
+class color:
+   PURPLE = '\033[95m'
+   CYAN = '\033[96m'
+   DARKCYAN = '\033[36m'
+   BLUE = '\033[94m'
+   GREEN = '\033[92m'
+   YELLOW = '\033[93m'
+   RED = '\033[91m'
+   BOLD = '\033[1m'
+   UNDERLINE = '\033[4m'
+   END = '\033[0m'
+
+from google.colab import drive
+drive.mount('/content/drive')
+import os
+import gdown
+
+FILE_PATH = 'UPennMayo_features.hdf5'
+FILE_ID = '1s5MxhRgM2r7vdU7KjiQ_FQw93zMFH5lz'
+DOWNLOAD_URL = f'https://drive.google.com/uc?id={FILE_ID}'
+
+if not os.path.exists(FILE_PATH):
+    pass # Add code to download the file here.
+    gdown.download(DOWNLOAD_URL, FILE_PATH, quiet=False)
+
+
+from google.colab import drive
+drive.mount('/content/drive')
+
+from google.colab import drive
+drive.flush_and_unmount()
+
+data_x = h5file.get_node('/Patient_2/Data_x')
+data_y = h5file.get_node('/Patient_2/Data_y')
+data_x_labels = h5file.get_node('/Patient_2/Data_x_Feat_Names')
+
+part_feature_df = pd.DataFrame(data_x[:], columns = data_x_labels[:].astype(str))
+part_feature_df['class'] = data_y[:]
+part_feature_df = part_feature_df.set_index('class')
+part_feature_df.head()
+
